@@ -2,4 +2,13 @@ node_modules
 out
 .vscode
 package-lock.json
-
+*.mp4
+*.avi
+*.mov
+*.flv
+*.wmv
+*.mkv
+*.webm
+*.mp3
+*.wav
+downloads

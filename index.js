@@ -1,5 +1,10 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
+const YTDlpWrap = require("yt-dlp-wrap").default;
 const path = require("path");
+
+const fs = require("fs");
+
+const ytDlp = new YTDlpWrap();
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -24,7 +29,22 @@ app.on("ready", createWindow);
 // });
 
 ipcMain.handle("get-youtube-video-data", async (event, url) => {
-  const data = { message: "Hello from the main process!", url: url };
+  console.log(url);
+  const data = await ytDlp.getVideoInfo(url);
+  // const data = await ytDlp.execPromise([url, "-F"]);
+  // save this data to a file
+  fs.writeFileSync("video.json", JSON.stringify(data));
+  return data;
+  // ytDlp
+  //   .execPromise(["https://www.youtube.com/watch?v=videoID", "-f", "best"])
+  //   .then((output) => console.log(output))
+  //   .catch((error) => console.error(error));
+});
+
+ipcMain.handle("download-youtube-video", async (event, url) => {
+  console.log(url);
+  const data = await ytDlp.execPromise([url, "-f", "best"]);
+  fs.writeFileSync("videodownlaod.json", JSON.stringify(data));
   return data;
 });
 
