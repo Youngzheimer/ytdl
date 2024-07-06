@@ -42,7 +42,7 @@ html, body {
     margin-top: 3px;
 }
 
-.info {
+.left .info {
     display: flex;
     flex-direction: row;
     padding: 10px;
@@ -64,6 +64,13 @@ html, body {
     flex-direction: column;
     gap: 5px;
     padding: 10px;
+    overflow-y: scroll;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.formats::-webkit-scrollbar {
+    display: none; /* WebKit */
 }
 
 .format {
@@ -72,6 +79,9 @@ html, body {
     background-color: #3f3f3f;
     display: flex;
     flex-direction: row;
+    align-items: center;
+    border-radius: 5px;
+    flex-shrink: 0; 
 }
 
 .format .resolution {
@@ -81,6 +91,27 @@ html, body {
     align-items: center;
     font-weight: bold;
     font-size: 1.1rem;
+}
+
+.format .divider {
+    width: 0.5px;
+    height: 50%;
+    background-color: #ffffff;
+
+}
+
+.format .info {
+    width: 60%; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 0.8rem;
+    padding-left: 15px;
+}
+
+.format .info div {
+    display: flex;
+    gap: 5px;
 }
 
 .download {
