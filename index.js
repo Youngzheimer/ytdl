@@ -10,8 +10,8 @@ let win;
 
 function createWindow() {
   win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 600,
+    height: 300,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"), // 여기를 수정합니다.
       nodeIntegration: false,

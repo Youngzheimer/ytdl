@@ -1,0 +1,93 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Pretendard', sans-serif;
+    background-color: #1f1f1f;
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    width: 100vw;
+    color: white;
+}
+
+.left {
+    width: 30%;
+    background-color: #0f0f0f;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.videoinfo {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.videoinfo img {
+    width: 100%;
+    height: auto;
+}
+
+.videoinfo .title {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.videoinfo .author {
+    font-size: 0.8rem;
+    margin-top: 3px;
+}
+
+.info {
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    gap: 2px;
+    font-size: 0.8rem;
+    color: #c0c0c0;
+}
+
+.right {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.formats {
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px;
+}
+
+.format {
+    width: 100%;
+    height: 40px;
+    background-color: #3f3f3f;
+    display: flex;
+    flex-direction: row;
+}
+
+.format .resolution {
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.download {
+    width: 100%;
+    height: 20%;
+    background-color: #3f3f3f;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
