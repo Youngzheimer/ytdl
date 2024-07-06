@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, clipboard } = require("electron");
 const YTDlpWrap = require("yt-dlp-wrap").default;
 const path = require("path");
 
@@ -6,8 +6,10 @@ const fs = require("fs");
 
 const ytDlp = new YTDlpWrap();
 
+let win;
+
 function createWindow() {
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
@@ -18,6 +20,14 @@ function createWindow() {
   });
 
   win.loadFile("index.html");
+
+  win.on("focus", () => {
+    const clipboardText = clipboard.readText();
+    console.log("클립보드 내용:", clipboardText);
+
+    // 필요하다면 여기서 renderer process로 내용을 보낼 수 있습니다
+    // win.webContents.send("clipboard-content", clipboardText);
+  });
 }
 
 app.on("ready", createWindow);
@@ -42,10 +52,69 @@ ipcMain.handle("get-youtube-video-data", async (event, url) => {
 });
 
 ipcMain.handle("download-youtube-video", async (event, url) => {
-  console.log(url);
-  const data = await ytDlp.execPromise([url, "-f", "best"]);
-  fs.writeFileSync("videodownlaod.json", JSON.stringify(data));
-  return data;
+  return new Promise((resolve, reject) => {
+    const ytDlpEventEmitter = ytDlp.exec([
+      url,
+      "-f",
+      "best",
+      "-o",
+      "output.mp4",
+    ]);
+
+    ytDlpEventEmitter.on("progress", (progress) => {
+      // win.webContents.send("download-progress", progress);
+      console.log(
+        progress.percent,
+        progress.totalSize,
+        progress.currentSpeed,
+        progress.eta
+      );
+    });
+
+    ytDlpEventEmitter.on("ytDlpEvent", (eventType, eventData) => {
+      console.log(eventType, eventData);
+      if (eventType === "download") {
+        const parts = eventData.trim().split(/\s+/);
+        let file = null;
+        let percentage, size, speed, eta;
+
+        if (parts[0] === "renderer.js:21") {
+          file = parts.shift();
+        }
+
+        percentage = parseFloat(parts[0]);
+        size = parts[2];
+        speed = parts[4];
+        eta = parts[6] === "in" ? parts[7] : parts[6];
+
+        const downloadData = {
+          file,
+          percentage,
+          size,
+          speed,
+          eta,
+        };
+
+        if (downloadData.speed === "Unknown") return;
+        if (downloadData.percentage === 100) return;
+        if (downloadData.eta === "ETA") return;
+        if (downloadData.percentage === NaN) return;
+
+        win.webContents.send("download-progress", downloadData);
+      }
+    });
+
+    ytDlpEventEmitter.on("error", (error) => {
+      reject(error);
+    });
+
+    ytDlpEventEmitter.on("close", () => {
+      console.log("all done");
+      resolve();
+    });
+
+    console.log(ytDlpEventEmitter.ytDlpProcess.pid);
+  });
 });
 
 app.on("window-all-closed", () => {

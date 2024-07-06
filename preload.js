@@ -6,4 +6,7 @@ contextBridge.exposeInMainWorld("electron", {
     await ipcRenderer.invoke("get-youtube-video-data", url),
   downloadYoutube: async (url) =>
     await ipcRenderer.invoke("download-youtube-video", url),
+  onReceiveData: (channel, func) => {
+    ipcRenderer.on(channel, (event, ...args) => func(...args));
+  },
 });

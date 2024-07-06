@@ -16,4 +16,8 @@ window.addEventListener("DOMContentLoaded", () => {
     responseParagraph.textContent = data.title;
     thumbnail.src = data.thumbnail;
   });
+
+  window.electron.onReceiveData("download-progress", (progress) => {
+    console.log(progress);
+  });
 });
